@@ -11,7 +11,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
-version = "1.0.0"  // b. Set Jar version to 1.0.0
+version = "1.0.0"  // b. Set Jar version  to 1.0.0
 group = "com.ido"
 description = "HelloWorld"
 
