@@ -50,8 +50,8 @@ jobs:
 
     - name: Build Docker Image
       run: |
-        docker build . --file Dockerfile --tag mskalt/helloworld:${{ steps.versioning.outputs.new_version }}
-        docker tag mskalt/helloworld:${{ steps.versioning.outputs.new_version }} mskalt/helloworld:latest
+        docker build . --file Dockerfile --tag maxskalt/helloworld:${{ steps.versioning.outputs.new_version }}
+        docker tag maxskalt/helloworld:${{ steps.versioning.outputs.new_version }} maxskalt/helloworld:latest
 
     - name: Login to Docker Hub
       uses: docker/login-action@v1
@@ -61,10 +61,10 @@ jobs:
 
     - name: Push Docker Image to Docker Hub
       run: |
-        docker push mskalt/helloworld:${{ steps.versioning.outputs.new_version }}
-        docker push mskalt/helloworld:latest
+        docker push maxskalt/helloworld:${{ steps.versioning.outputs.new_version }}
+        docker push maxskalt/helloworld:latest
 
     - name: Pull and Run Docker Image
       run: |
-        docker pull mskalt/helloworld:${{ steps.versioning.outputs.new_version }}
-        docker run --user 1000:1000 -d mskalt/helloworld:${{ steps.versioning.outputs.new_version }}
+        docker pull maxskalt/helloworld:${{ steps.versioning.outputs.new_version }}
+        docker run --user 1000:1000 -d maxskalt/helloworld:${{ steps.versioning.outputs.new_version }}
