@@ -1,91 +1,32 @@
-name: Java CI with Docker
+name: Build and Deploy Java Application with Docker
+
 
 on:
-  push:
-    branches:
-      - master
+ workflow_dispatch
 
 jobs:
-  increment_version:
-    runs-on: ubuntu-latest
-    outputs:
-      new_version: ${{ steps.versioning.outputs.new_version }}
-    steps:
-    - name: Check out code
-      uses: actions/checkout@v2
-    - name: Increment version
-      id: versioning
-      run: |
-        # Extract the current version
-        CURRENT_VERSION=$(grep 'version =' build.gradle.kts | awk '{print $3}' | tr -d '"')
-        echo "Current version: $CURRENT_VERSION"
-        
-        # Split the version into major, minor, and patch components
-        IFS='.' read -ra ADDR <<< "$CURRENT_VERSION"
-        PATCH=$((ADDR[2] + 1))
-        NEW_VERSION="${ADDR[0]}.${ADDR[1]}.$PATCH"
-        echo "New version: $NEW_VERSION"
-        
-        # Update the version in the build.gradle.kts file
-        sed -i "s/version = \"$CURRENT_VERSION\"/version = \"$NEW_VERSION\"/" build.gradle.kts
-        
-        # Output the new version for other steps or jobs
-        echo "::set-output name=new_version::$NEW_VERSION"
-
-    - name: Commit and push new version
-      run: |
-        git config user.name mskalt
-        git config user.email mskalt@gmail.com
-        git add build.gradle.kts
-        git commit -m "Increment version to ${{ steps.versioning.outputs.new_version }}"
-        git push
-
-  build:
-    needs: increment_version
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-    - name: Check out code
-      uses: actions/checkout@v2
-
+    - uses: actions/checkout@v2
     - name: Set up JDK 11
       uses: actions/setup-java@v2
       with:
         java-version: '11'
         distribution: 'adopt'
-
-    - name: Cache Gradle packages
-      uses: actions/cache@v2
-      with:
-        path: |
-          ~/.gradle/caches
-          ~/.gradle/wrapper
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
-        restore-keys: |
-          ${{ runner.os }}-gradle-
-
-    - name: Build with Gradle
-      run: ./gradlew build -Pversion=${{ needs.increment_version.outputs.new_version }}
-
-    - name: Package JAR
-      run: ./gradlew shadowJar  # Use shadowJar for creating a fat JAR
-
-    - name: Build Docker Image
+    - name: Build Docker image using Multistage
       run: |
-        docker build . --file Dockerfile --tag maxskalt/helloworld:${{ needs.increment_version.outputs.new_version }}
-        docker tag maxskalt/helloworld:${{ needs.increment_version.outputs.new_version }} maxskalt/helloworld:latest
-
-    - name: Login to Docker Hub
+        docker build -t maxapp:${{ github.sha }} -t maxapp:latest .
+    - name: Log in to Docker Hub
       uses: docker/login-action@v1
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
-
-    - name: Push Docker Image to Docker Hub
+    - name: Push Docker image to Docker Hub
       run: |
-        docker push maxskalt/helloworld:${{ needs.increment_version.outputs.new_version }}
-        docker push maxskalt/helloworld:latest
-
-    - name: Pull and Run Docker Image
+        docker push maxapp:${{ github.sha }}
+        docker push maxapp:latest
+    - name: Download and run Docker image
       run: |
-        docker pull maxskalt/helloworld:${{ needs.increment_version.outputs.new_version }}
-        docker run --user 1000:1000 -d maxskalt/helloworld:${{ needs.increment_version.outputs.new_version }}
+        docker pull maxapp:latest
+        docker run --rm maxapp:latest
