@@ -7,7 +7,7 @@ plugins {
     // This is used to create a GraalVM native image
     id("org.graalvm.buildtools.native") version "0.9.11"
 
-    // This creates a fat JAR
+    // This creates a fat JARaa
     id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
