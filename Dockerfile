@@ -6,17 +6,18 @@ COPY gradlew .
 COPY gradle gradle
 RUN chmod +x ./gradlew
 
-# Copy the correct build script file
 COPY build.gradle.kts .
 COPY src src
 
-RUN ./gradlew clean build
+# Use shadowJar to ensure the fat JAR is built
+RUN ./gradlew clean shadowJar
 
 # Package stage
 FROM openjdk:11-jre-slim
 WORKDIR /app
 
-COPY --from=build /workspace/app/build/libs/*.jar app.jar
+# Ensure copying the specific shadow JAR
+COPY --from=build /workspace/app/build/libs/app.jar /app/app.jar
 
 RUN useradd -m myuser
 USER myuser
