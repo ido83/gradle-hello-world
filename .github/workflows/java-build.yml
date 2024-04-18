@@ -1,4 +1,3 @@
-
 name: Java CI with Docker
 
 on:
@@ -7,9 +6,43 @@ on:
       - master
 
 jobs:
-  build:
+  increment_version:
     runs-on: ubuntu-latest
+    outputs:
+      new_version: ${{ steps.versioning.outputs.new_version }}
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+    - name: Increment version
+      id: versioning
+      run: |
+        # Extract the current version
+        CURRENT_VERSION=$(grep 'version =' build.gradle.kts | awk '{print $3}' | tr -d '"')
+        echo "Current version: $CURRENT_VERSION"
+        
+        # Split the version into major, minor, and patch components
+        IFS='.' read -ra ADDR <<< "$CURRENT_VERSION"
+        PATCH=$((ADDR[2] + 1))
+        NEW_VERSION="${ADDR[0]}.${ADDR[1]}.$PATCH"
+        echo "New version: $NEW_VERSION"
+        
+        # Update the version in the build.gradle.kts file
+        sed -i "s/version = \"$CURRENT_VERSION\"/version = \"$NEW_VERSION\"/" build.gradle.kts
+        
+        # Output the new version for other steps or jobs
+        echo "::set-output name=new_version::$NEW_VERSION"
 
+    - name: Commit and push new version
+      run: |
+        git config user.name mskalt
+        git config user.email mskalt@gmail.com
+        git add build.gradle.kts
+        git commit -m "Increment version to ${{ steps.versioning.outputs.new_version }}"
+        git push
+
+  build:
+    needs: increment_version
+    runs-on: ubuntu-latest
     steps:
     - name: Check out code
       uses: actions/checkout@v2
@@ -30,28 +63,16 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-gradle-
 
-    - name: Increase patch version
-      id: versioning
-      run: |
-        VERSION=$(./gradlew properties -q | grep "^version:" | awk '{print $2}')
-        IFS='.' read -ra ADDR <<< "$VERSION"
-        PATCH=$((ADDR[2]+1))
-        NEW_VERSION="${ADDR[0]}.${ADDR[1]}.$PATCH"
-        echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
-        echo "VERSION=$VERSION" >> $GITHUB_ENV
-        echo "::set-output name=new_version::$NEW_VERSION"
-      shell: bash
-
     - name: Build with Gradle
-      run: ./gradlew build -Pversion=${{ env.NEW_VERSION }}
+      run: ./gradlew build -Pversion=${{ needs.increment_version.outputs.new_version }}
 
     - name: Package JAR
-      run: ./gradlew jar
+      run: ./gradlew shadowJar  # Use shadowJar for creating a fat JAR
 
     - name: Build Docker Image
       run: |
-        docker build . --file Dockerfile --tag maxskalt/helloworld:${{ steps.versioning.outputs.new_version }}
-        docker tag maxskalt/helloworld:${{ steps.versioning.outputs.new_version }} maxskalt/helloworld:latest
+        docker build . --file Dockerfile --tag maxskalt/helloworld:${{ needs.increment_version.outputs.new_version }}
+        docker tag maxskalt/helloworld:${{ needs.increment_version.outputs.new_version }} maxskalt/helloworld:latest
 
     - name: Login to Docker Hub
       uses: docker/login-action@v1
@@ -61,10 +82,10 @@ jobs:
 
     - name: Push Docker Image to Docker Hub
       run: |
-        docker push maxskalt/helloworld:${{ steps.versioning.outputs.new_version }}
+        docker push maxskalt/helloworld:${{ needs.increment_version.outputs.new_version }}
         docker push maxskalt/helloworld:latest
 
     - name: Pull and Run Docker Image
       run: |
-        docker pull maxskalt/helloworld:${{ steps.versioning.outputs.new_version }}
-        docker run --user 1000:1000 -d maxskalt/helloworld:${{ steps.versioning.outputs.new_version }}
+        docker pull maxskalt/helloworld:${{ needs.increment_version.outputs.new_version }}
+        docker run --user 1000:1000 -d maxskalt/helloworld:${{ needs.increment_version.outputs.new_version }}
