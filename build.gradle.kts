@@ -9,7 +9,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
-version = "1.0.0"  // updated version to 1.0.0 as per your comment
+version = "1.0.0"
 group = "com.ido"
 description = "HelloWorld"
 
@@ -21,11 +21,9 @@ repositories {
     mavenCentral()
 }
 
-tasks {
-    withType<ShadowJar> {
-        manifest {
-            attributes["Main-Class"] = "com.ido.HelloWorld"
-        }
+tasks.withType<ShadowJar> {
+    manifest {
+        attributes("Main-Class" to "com.ido.HelloWorld")
     }
 }
 
