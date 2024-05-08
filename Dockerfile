@@ -19,7 +19,7 @@ WORKDIR /app
 # Ensure copying the specific shadow JAR
 COPY --from=build /workspace/app/build/libs/app.jar /app/app.jar
 
-RUN useradd -m myuser
-USER myuser
+RUN useradd -m mskalt
+USER mskalt
 
 CMD ["java", "-jar", "app.jar"]
