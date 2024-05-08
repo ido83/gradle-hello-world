@@ -1,24 +1,34 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 plugins {
     kotlin("jvm") version "1.6.20"
     id("application")
     id("java")
     id("idea")
-
-    // This is used to create a GraalVM native image
     id("org.graalvm.buildtools.native") version "0.9.11"
-
-    // This creates a fat JAR
     id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
+version = "1.0.0"
 group = "com.ido"
 description = "HelloWorld"
 
-application.mainClass.set("com.ido.HelloWorld")
+application {
+    mainClass.set("com.ido.HelloWorld")
+}
 
 repositories {
     mavenCentral()
 }
+
+tasks.withType<ShadowJar> {
+    archiveFileName.set("app.jar")
+    destinationDirectory.set(file("${buildDir}/libs"))
+    manifest {
+        attributes("Main-Class" to "com.ido.HelloWorld")
+    }
+}
+
 
 graalvmNative {
     binaries {
