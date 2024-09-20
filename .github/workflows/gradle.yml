@@ -31,4 +31,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: matankaufman/helloworld:${{./gradlew -q printVersion}
+          tags: matankaufman/helloworld:${{ ./gradlew -q printVersion }}
