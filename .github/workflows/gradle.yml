@@ -20,7 +20,7 @@ jobs:
 
       - name: Use Easy Versioning to increment version
         id: versioning
-        uses: Langsdorf/easy-versioning@v1.0.0
+        uses: Langsdorf/easy-versioning@v1.0.1
         with:
           input: '0.0.1'
           increment: patch
@@ -36,4 +36,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: matankaufman/helloworld:${{ steps.versioning.outputs.version}}
+          tags: matankaufman/helloworld:${{ steps.versioning.outputs.version }}
