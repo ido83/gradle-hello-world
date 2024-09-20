@@ -38,8 +38,4 @@ graalvmNative {
         }
     }
 }
-tasks.register("printVersion") {
-    doLast {
-        println("Current version: $version")
-    }
-}
+
