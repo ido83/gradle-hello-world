@@ -18,13 +18,9 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
 
-      - name: Releasy Semantic Versioning
-        id: releasy
-        uses: releasy-actions/releasy-semantic-action@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          bump: patch
+      - name: Git Version
+        id: versioning
+        uses: codacy/git-version@2.8.0
 
       - name: Login to Dockerhub
         uses: docker/login-action@v3
