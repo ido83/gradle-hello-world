@@ -10,7 +10,7 @@ jobs:
         uses: action/setup-java@v2
         with:
           java-version: 17
-          disributed: 'adopt'
+          distributed: 'adopt'
       - name: Build with Gradle
         run: ./gradlew build
 
