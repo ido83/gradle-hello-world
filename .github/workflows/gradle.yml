@@ -18,9 +18,12 @@ jobs:
       - name: Build with Gradle and automatically increment version
         run: ./gradlew build
 
-      - name: Get version from Gradle
-        id: get_version
-        run: echo "VERSION=$(./gradlew -q printVersion)" >> $GITHUB_ENV
+      - name: Use Easy Versioning to increment version
+        id: versioning
+        uses: Langsdorf/easy-versioning@v1.0.0
+        with:
+          input: '0.0.1'
+          increment: patch
 
       - name: Login to Dockerhub
         uses: docker/login-action@v3
@@ -33,4 +36,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: matankaufman/helloworld:${{ env.VERSION }}
+          tags: matankaufman/helloworld:${{ steps.versioning.outputs.version}}
