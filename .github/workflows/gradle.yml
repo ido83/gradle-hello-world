@@ -18,6 +18,13 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
 
+      - name: Use shipkit-auto-version to print version
+        id: print_version
+        run: ./gradlew printVersion
+
+      - name: Output New Version
+        run: echo "New Version is ${{ steps.print_version.outputs.version }}"
+
 
 
       - name: Login to Dockerhub
@@ -31,4 +38,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: matankaufman/helloworld:${{echo " ./gradlew -q printVersion " }}
+          tags: matankaufman/helloworld
