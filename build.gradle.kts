@@ -15,7 +15,7 @@ plugins {
 
 group = "com.ido"
 description = "HelloWorld"
-version = "0.0.1"
+
 
 application.mainClass.set("com.ido.HelloWorld")
 
@@ -36,5 +36,10 @@ graalvmNative {
                 vendor.set(JvmVendorSpec.matching("GraalVM Community"))
             })
         }
+    }
+}
+tasks.register("printVersion") {
+    doLast {
+        println("Current version: $version")
     }
 }

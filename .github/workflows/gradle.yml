@@ -16,5 +16,5 @@ jobs:
           distribution: 'adopt'
           cache: gradle
 
-      - name: Build with Gradle
+      - name: Build with Gradle and automatically increment version
         run: ./gradlew build
