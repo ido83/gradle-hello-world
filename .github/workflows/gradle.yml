@@ -20,9 +20,9 @@ jobs:
 
       - name: Use Semantic Versioning to increment version
         id: versioning
-        uses: paulhatch/semantic-version@v4
+        uses: mathieudutour/github-tag-action@v6.0
         with:
-          patch: true
+          default_semver_bump: patch
 
       - name: Login to Dockerhub
         uses: docker/login-action@v3
