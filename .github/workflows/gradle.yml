@@ -1,0 +1,17 @@
+name: CI
+
+on: [PUSH]
+jobs:
+  build:
+    run-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 17
+        uses: action/setup-java@v2
+        with:
+          java-version: 17
+          disributed: 'adopt'
+      - name: Build with Gradle
+        run: ./gradlew build
+
+
