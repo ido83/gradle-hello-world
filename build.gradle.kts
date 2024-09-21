@@ -9,7 +9,6 @@ plugins {
 
     // This creates a fat JAR
     id("com.github.johnrengelman.shadow") version "7.1.2"
-    //id("org.shipkit.shipkit-auto-version") version  "2.0.10"
 
 }
 
@@ -39,8 +38,3 @@ graalvmNative {
     }
 }
 
-//tasks.register("printVersion") {
-//    doLast {
-//        println("Current version: $version")
-//    }
-//}
