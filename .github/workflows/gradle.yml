@@ -2,7 +2,6 @@ name: E.T phone home
 on:
   push:
     branches:
-      - master
       - test
   pull_request:
     branches:
@@ -39,7 +38,6 @@ jobs:
         id: version
         uses: bitshifted/git-auto-semver@v1
         with:
-          main_branch: test
           create_tag: true
           tag_prefix: v
 
