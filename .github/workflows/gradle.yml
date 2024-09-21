@@ -2,11 +2,10 @@ name: E.T phone home
 on:
   push:
     branches:
-      - main
       - test
   pull_request:
     branches:
-      - main
+      - master
     types:
       - closed
 jobs:
