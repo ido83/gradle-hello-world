@@ -22,7 +22,7 @@ jobs:
       - name: Unit test
         run: ./gradlew test
 
-      - name: Build with Gradle
+      - name: Build with Gradlew
         run: ./gradlew build
 
       - name: Fetch Git tags
