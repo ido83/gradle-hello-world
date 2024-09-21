@@ -9,6 +9,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Fetch Git tags
+        run: git fetch --tags
+
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
@@ -25,8 +28,7 @@ jobs:
       - name: Build with Gradlew
         run: ./gradlew build
 
-      - name: Fetch Git tags
-        run: git fetch --tags
+
       - name: tag version
         id: version
         uses: bitshifted/git-auto-semver@v1
@@ -56,4 +58,4 @@ jobs:
       - name: PUll and Run
         run: |
          docker pull matankaufman/helloworld:${{ steps.version.outputs.version-string }}
-         docker run -d --name E.T_PHONE_HOME matankaufman/helloworld:${{ steps.version.outputs.version-string }}
+         docker run  --name E.T_PHONE_HOME matankaufman/helloworld:${{ steps.version.outputs.version-string }}
