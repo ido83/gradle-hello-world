@@ -33,6 +33,9 @@ jobs:
           initial_version: '1.0.0'
           create_tag: true
           tag_prefix: v
+      - name: Print Calculated Version
+        run: echo "Version is ${{ steps.version.outputs.version-string }}"
+
 
       - name: Login to Dockerhub
         uses: docker/login-action@v3
