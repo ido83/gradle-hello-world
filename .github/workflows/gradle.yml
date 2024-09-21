@@ -1,7 +1,6 @@
 name: E.T phone home
 on:
-
-  pull_request:
+  push:
     branches:
       - master
     types:
@@ -13,7 +12,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Fetch Git tags
-        run: git fetch --tags -all
+        run: git fetch --tags --all
 
       - name: Set up JDK 17
         uses: actions/setup-java@v3
