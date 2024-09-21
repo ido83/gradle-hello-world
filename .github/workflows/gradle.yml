@@ -35,7 +35,7 @@ jobs:
 
       - name: Use version
         run:
-          echo "Calculated version: ${{ steps.calculate-version.outputs.version-string }}"
+        echo "Calculated version: ${{ steps.calculate-version.outputs.version-string }}"
 
       - name: Login to Dockerhub
         uses: docker/login-action@v3
