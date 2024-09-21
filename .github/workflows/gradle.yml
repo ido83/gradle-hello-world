@@ -1,9 +1,6 @@
 name: E.T phone home
 on:
-  push:
-    branches:
-      - master
-      - test
+
   pull_request:
     branches:
       - master
