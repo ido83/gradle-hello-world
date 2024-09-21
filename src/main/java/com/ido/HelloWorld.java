@@ -6,6 +6,6 @@ package com.ido;
  
 public class HelloWorld {
     public static void main(String[] args) {
-        System.out.println("Hello Matan!");
+        System.out.println("Hello Matan Kaufman!");
     }
 }
