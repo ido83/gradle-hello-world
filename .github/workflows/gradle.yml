@@ -12,10 +12,10 @@ jobs:
       - name: Fetch Git tags
         run: git fetch --tags
 
-      - name: Set up JDK 24
+      - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
-          java-version: '24'
+          java-version: '17'
           distribution: 'temurin'
           cache: gradle
 
