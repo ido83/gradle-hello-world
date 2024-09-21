@@ -2,7 +2,13 @@ name: E.T phone home
 on:
   push:
     branches:
+      - main
       - test
+  pull_request:
+    branches:
+      - main
+    types:
+      - closed
 jobs:
   build:
     runs-on: ubuntu-latest
