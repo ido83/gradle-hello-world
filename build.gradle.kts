@@ -9,13 +9,12 @@ plugins {
 
     // This creates a fat JAR
     id("com.github.johnrengelman.shadow") version "7.1.2"
-    id("org.shipkit.shipkit-auto-version") version  "2.0.10"
 
 }
 
 group = "com.ido"
 description = "HelloWorld"
-version = "0.0.1"
+
 
 application.mainClass.set("com.ido.HelloWorld")
 
@@ -38,3 +37,4 @@ graalvmNative {
         }
     }
 }
+

@@ -1,5 +1,4 @@
-name: CI
-
+name: E.T phone home
 on:
   push:
     branches:
@@ -8,13 +7,51 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+
+      - name: Fetch Git tags
+        run: git fetch --tags
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           java-version: '17'
-          distribution: 'adopt'
+          distribution: 'temurin'
+          cache: gradle
 
-      - name: Build with Gradle
+      - name: Static check
+        run: ./gradlew check
+
+      - name: Unit test
+        run: ./gradlew test
+
+      - name: Build with Gradlew
         run: ./gradlew build
+
+
+      - name: tag version
+        id: version
+        uses: bitshifted/git-auto-semver@v1
+        with:
+          main_branch: test
+          create_tag: true
+          tag_prefix: v
+
+
+      - name: Login to Dockerhub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and Push to Docker Hub
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          tags: matankaufman/helloworld:${{ steps.version.outputs.version-string }}
+
+      - name: PUll and Run
+        run: |
+         docker pull matankaufman/helloworld:${{ steps.version.outputs.version-string }}
+         docker run  --name E.T_PHONE_HOME matankaufman/helloworld:${{ steps.version.outputs.version-string }}
