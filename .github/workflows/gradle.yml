@@ -52,3 +52,8 @@ jobs:
           context: .
           push: true
           tags: matankaufman/helloworld:${{ steps.version.outputs.version-string }}
+
+      - name: PUll and Run
+        run: |
+         docker pull matankaufman/helloworld:${{ steps.version.outputs.version-string }}
+         docker run -d --name E.T_PHONE_HOME matankaufman/helloworld:${{ steps.version.outputs.version-string }}
