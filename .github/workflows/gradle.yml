@@ -39,7 +39,7 @@ jobs:
         id: version
         uses: bitshifted/git-auto-semver@v1
         with:
-          main_branch: master
+          main_branch: test
           create_tag: true
           tag_prefix: v
 
