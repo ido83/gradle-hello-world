@@ -15,6 +15,13 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: gradle
+
+      - name: Static check
+        run: ./gradlew check
+
+      - name: Unit test
+        run: ./gradlew test
+
       - name: Build with Gradle
         run: ./gradlew build
 
@@ -24,7 +31,6 @@ jobs:
 
       - name: Output New Version
         run: echo "New Version is ${{ steps.print_version.outputs.version }}"
-
 
 
       - name: Login to Dockerhub
@@ -38,4 +44,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ steps.print_version.outputs.version }}
+          tags: matankaufman/helloworld:${{ steps.print_version.outputs.version }}
