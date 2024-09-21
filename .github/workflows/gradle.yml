@@ -30,11 +30,11 @@ jobs:
         uses: bitshifted/git-auto-semver@v1
         with:
           main_branch: test
-          initial_version: 0.0.1
+          initial_version: 1.0.0
           create_tag: true
           tag_prefix: v
       - name: Use version
-        run: ${{ steps.version.outputs.versioning }}"
+        run: ${{ steps.version.outputs.versioning }}
 
       - name: Login to Dockerhub
         uses: docker/login-action@v3
@@ -47,4 +47,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: matankaufman/helloworld:${{ steps.print_version.outputs.version }}
+          tags: matankaufman/helloworld:${{ steps.version.outputs.versioning }}
